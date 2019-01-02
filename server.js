@@ -1,3 +1,5 @@
+// server.js
+
 const express = require('express');
 const path = require('path');
 const cookeParser = require('cookie-parser');
@@ -9,20 +11,51 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
+const index = require('./routes/index');
+const users = require('./routes/users');
 
 
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/passportLogin', {
+    useNewUrlParser: true
+});
+let db = mongoose.connect;
 
 const app = express();
 const PORT = 3000;
 
-mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/passport', {
-    useNewUrlParser: true
+app.use(express.static(__dirname + '/public'));
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(cookeParser());
+
+app.use(session({
+ secret: 'keyboard cat',
+ resave: false,
+ saveUninitialized: true,
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(expressValidator());
+
+app.use(flash());
+
+app.use(function(req, res, next){
+ res.locals.success_message = req.flash('success_message');
+ res.locals.error_message = req.flash('error_message');
+ res.locals.error = req.flash('error');
+ res.locals.user = req.user || null;
+ next();
 });
 
-app.get('/', (req, res) => {
-  res.send('CONNECTED');
-});
+app.use('/', index);
+app.use('/users', users);
 
 app.listen(PORT, () =>{
     console.log('Server running on port ',PORT);

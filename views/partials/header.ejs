@@ -1,0 +1,31 @@
+<%if (success_message != '') { %>
+    <div class="alert alert-success">
+     <%= success_message %>
+    </div>
+   <% } %>
+   <%if (error_message != '') { %>
+    <div class="alert alert-danger">
+     <%= error_message %>
+    </div>
+   <% } %>
+   <%if (error != '') { %>
+    <div class="alert alert-danger">
+     <%= error %>
+    </div>
+   <% } %>
+
+
+<nav class="navbar navbar-default" role="navigator">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a href="#" class="navbar-brand">
+                Express Auth App
+            </a>
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li><a href="/users/register">Register</a></li>
+                <li><a href="/users/login">Login</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
